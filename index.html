@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible"
+          content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+    <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .column {
+            width: 50%;
+        }
+
+        #floorplan {
+            /* max-height: 100vh; */
+            max-height: 1200px;
+        }
+
+        #panorama {
+            position: fixed;
+            max-width: 100%;
+            width: 50%;
+            background: none;
+            /* height: 100vh; */
+
+        }
+
+        #panorama,
+        #floorplan {
+            padding: 2rem;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="column">
+
+            <object data="img/floor-plant-1.svg"
+                    id="floorplan"
+                    type="image/svg+xml"></object>
+        </div>
+        <div class="column">
+            <div id="panorama"></div>
+
+            <!-- <iframe id="picture"
+                    src="https://www.klapty.com/tour/tunnel/8Nl0nHdC18"
+                    frameborder="0"
+                    allowfullscreen="true"
+                    mozallowfullscreen="true"
+                    webkitallowfullscreen="true"
+                    allowvr="true"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; vr"></iframe> -->
+        </div>
+    </div>
+    <script>
+
+        const locations = [{
+            locationID: 'Entrada',
+            url: 'panoramas/corridor-1.jpg',
+            yaw: 0
+        }, {
+            locationID: 'Salon 1',
+            url: 'panoramas/living-room-1.jpg',
+            yaw: -10
+        }, {
+            locationID: 'Salon 2',
+            url: 'panoramas/living-room-2.jpg',
+            yaw: -50
+        }
+        ]
+
+        const svg = function () {
+            return document.getElementById('floorplan').contentDocument;
+        }
+        // let svgEl = document.getElementById('floorplan').contentDocument;
+
+        document.getElementById('floorplan').addEventListener('load', () => {
+            //the event occurred
+            locations.forEach((elem, i) => {
+                // yaw -180 180
+                // 110 - 0
+                // svg().getElementById("POV").setAttribute("transform", "translate(46.994 445.612) rotate(90)")
+                const el = svg().getElementById(elem.locationID)
+                el.addEventListener('mouseover', evt => {
+                    if (!evt.target.classList.contains('active')) {
+                        // document.getElementById('picture').src = elem.url;
+                        window.panorama = pannellum.viewer('panorama', {
+                            "type": "equirectangular",
+                            "panorama": elem.url,
+                            "autoLoad": true,
+                            // "autoRotate": -2,
+                            "yaw": elem.yaw,
+                            "hotSpotDebug": true,
+                            "dragHandlerFunc": function (evt) {
+                                console.log(evt)
+                                debugger
+                            },
+                            "dragHandlerArgs": {
+
+                            }
+                        });
+                        // debugger
+                        console.log(evt.target)
+                        const activeEl = svg().querySelector('circle.active');
+                        if (activeEl) {
+                            svg().querySelector('circle.active').classList.remove('active')
+                        }
+                    }
+                });
+                el.addEventListener('mouseenter', evt => {
+                    el.classList.add('active')
+                });
+
+
+            });
+
+            const mouseoverEvent = new Event('mouseover');
+            const firstEl = svg().getElementById("Entrada");
+            firstEl.dispatchEvent(mouseoverEvent);
+            firstEl.classList.add('active')
+        })
+
+
+
+    </script>
+
+</body>
+
+</html>
