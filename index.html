@@ -56,7 +56,6 @@
 </head>
 
 <body>
-
     <div class="container">
         <div class="column">
 
@@ -78,35 +77,115 @@
         </div>
     </div>
     <script>
-
+        const initialLocation = 'kitchen-3';
         const locations = [{
-            locationID: 'Entrada',
+            locationID: 'corridor-1',
             url: 'panoramas/corridor-1.jpg',
-            yaw: 0
+            yaw: 114,
+            rotation: 52
         }, {
-            locationID: 'Salon 1',
+            locationID: 'corridor-2',
+            url: 'panoramas/corridor-2.jpg',
+            yaw: 20.28,
+            rotation: -25
+        }, {
+            locationID: 'corridor-3',
+            url: 'panoramas/corridor-3.jpg',
+            yaw: -78,
+            rotation: 12
+        }, {
+            locationID: 'living-room-1',
             url: 'panoramas/living-room-1.jpg',
-            yaw: -10
+            yaw: -10,
+            rotation: 35
         }, {
-            locationID: 'Salon 2',
+            locationID: 'living-room-2',
             url: 'panoramas/living-room-2.jpg',
-            yaw: -50
+            yaw: -50,
+            rotation: -155
+        }, {
+            locationID: 'first-bathroom-0',
+            url: 'panoramas/first-bathroom-0.jpg',
+            yaw: -157,
+            rotation: 75
+        }, {
+            locationID: 'first-bathroom-1',
+            url: 'panoramas/first-bathroom-1.jpg',
+            yaw: -266,
+            rotation: 122
+        }, {
+            locationID: 'kitchen-1',
+            url: 'panoramas/kitchen-1.jpg',
+            yaw: 281,
+            rotation: 32
+        }, {
+            locationID: 'kitchen-2',
+            url: 'panoramas/kitchen-2.jpg',
+            yaw: 88,
+            rotation: 55
+        }, {
+            locationID: 'kitchen-3',
+            url: 'panoramas/kitchen-3.jpg',
+            yaw: 96,
+            rotation: 58
         }
         ]
+
+
 
         const svg = function () {
             return document.getElementById('floorplan').contentDocument;
         }
         // let svgEl = document.getElementById('floorplan').contentDocument;
+        const getCurrentTranslate = function () {
+            const cx = mySvg.querySelector('.active').getAttribute('cx');
+            const cy = mySvg.querySelector('.active').getAttribute('cy');
+            return `translate(${cx} ${cy})`
+        }
+
+        setInterval(function () {
+            if (mySvg.querySelector('.active')) {
+                const location = locations.find(elem => elem.locationID === mySvg.querySelector('.active').id)
+                const currentYaw = panorama.getYaw();
+                const initYaw = location.yaw;
+                const newRotation = location.rotation - (initYaw - currentYaw)
+                const newTransform = `${getCurrentTranslate()} rotate(${newRotation})`;
+                mySvg.querySelector('#POV').setAttribute('transform', newTransform);
+                // console.log(newTransform)
+            }
+        }, 300);
+
+        const createTriangle = function () {
+            let polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon")
+            polygon.id = "POV"
+            //https://www.triangle-calculator.com/?what=sss&a=50&b=50&c=50&submit=Solve
+            // Triangle vertex coordinates: [0; 0] [50; 0] [25; 43.301]
+            polygon.setAttribute("points", "0 0 50 0 25 43.301")
+            polygon.setAttribute("style", "stroke:#660000; fill:#cc3333;")
+            return polygon;
+        };
 
         document.getElementById('floorplan').addEventListener('load', () => {
             //the event occurred
+            window.mySvg = document.getElementById('floorplan').contentDocument;
+
+            //https://www.triangle-calculator.com/?what=sss&a=50&b=50&c=50&submit=Solve
+            // Triangle vertex coordinates: [0; 0] [50; 0] [25; 43.301]
+            // mySvg.querySelector('#POV').setAttribute("points", "0 0 50 0 25 43.301")
+
+            mySvg.querySelector('#Plano').appendChild(createTriangle())
+
             locations.forEach((elem, i) => {
                 // yaw -180 180
                 // 110 - 0
                 // svg().getElementById("POV").setAttribute("transform", "translate(46.994 445.612) rotate(90)")
-                const el = svg().getElementById(elem.locationID)
+                const el = svg().getElementById(elem.locationID);
+                if (!el) {
+                    console.error(`There is no location at the SVG with id: #${elem.locationID}`)
+                    return false
+                }
                 el.addEventListener('mouseover', evt => {
+                    //debugger
                     if (!evt.target.classList.contains('active')) {
                         // document.getElementById('picture').src = elem.url;
                         window.panorama = pannellum.viewer('panorama', {
@@ -115,14 +194,13 @@
                             "autoLoad": true,
                             // "autoRotate": -2,
                             "yaw": elem.yaw,
-                            "hotSpotDebug": true,
-                            "dragHandlerFunc": function (evt) {
-                                console.log(evt)
-                                debugger
-                            },
-                            "dragHandlerArgs": {
+                            // "hotSpotDebug": true,
+                            // "dragHandlerFunc": function (evt) {
+                            //     console.log(evt)
+                            // },
+                            // "dragHandlerArgs": {
 
-                            }
+                            // }
                         });
                         // debugger
                         console.log(evt.target)
@@ -140,7 +218,7 @@
             });
 
             const mouseoverEvent = new Event('mouseover');
-            const firstEl = svg().getElementById("Entrada");
+            const firstEl = svg().getElementById(initialLocation);
             firstEl.dispatchEvent(mouseoverEvent);
             firstEl.classList.add('active')
         })
