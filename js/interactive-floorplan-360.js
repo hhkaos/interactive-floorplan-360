@@ -1,9 +1,7 @@
 'use strict';
 
 window._IFP = window._IFP || {};
-/*
 
-*/
 const renderApp = function(config){
     let floorMenu = '';
     Object.keys(config.floorplans).forEach((elem, i) => {
@@ -36,17 +34,16 @@ const renderApp = function(config){
     `;
 
     return new DOMParser().parseFromString(xmlString, "text/html").documentElement;
-
 };
 
 const renderFloorPlan = function(dom, config){
-    /*
-    IF EMPTY -> FILL DOM
-    */
+
     const appEl = document.querySelector(dom);
     const promises = Array();
     if(appEl.innerHTML.trim() === ""){
-
+        /*
+            IF EMPTY -> FILL DOM
+        */
         appEl.appendChild(renderApp(config).querySelector("body > *"));
 
         Object.keys(config.floorplans).forEach((elem, i) => {
@@ -56,32 +53,19 @@ const renderFloorPlan = function(dom, config){
                     return fetch(config.floorplans[elem].tour)
                     .then(response => response.json()
                     )
-                }
-                );
-
-
-                // .then(data => {
-                //     debugger
-                //     data.response)
-                //     config.floorplans[data.floor].tourContent = data.response
-                // });
+                });
             });
             let promisesWorking = promises.map(fn => fn());
             Promise.all(promisesWorking)
             .then(response =>{
 
-
                 response.forEach(function(elem, i){
-
                     config.floorplans[i].tourContent = elem
-                    // responses[0]().then(data => {console.log(data)})
                 });
-
 
                 // Init tour on floor 0
                 const initTour = config.floorplans[config.defaultFloor]
                 let tour = initTour.tourContent;
-// debugger
                 document.querySelector('#floorplan').data = initTour.floorplan;
 
                 const panorama = pannellum.viewer('panorama', {
@@ -93,12 +77,13 @@ const renderFloorPlan = function(dom, config){
                     // "hotSpotDebug": true,
                 });
 
-                // setTimeout(function () {
-                //     const mouseoverEvent = new Event('mouseover');
-                //     const firstEl = _IFP.mySvg.getElementById(config.initialLocation);
-                //     firstEl.dispatchEvent(mouseoverEvent);
-                //     firstEl.classList.add('active');
-                // }, 300);
+                setTimeout(function () {
+                    const mouseoverEvent = new Event('mouseover');
+
+                    const firstEl = _IFP.mySvg.getElementById(config.floorplans[config.defaultFloor].initialLocation);
+                    firstEl.dispatchEvent(mouseoverEvent);
+                    firstEl.classList.add('active');
+                }, 300);
 
                 panorama.on('scenechange', function (extWindow) {
                     const mySvg = _IFP.mySvg;
@@ -114,17 +99,17 @@ const renderFloorPlan = function(dom, config){
                     return `translate(${cx} ${cy})`
                 }
 
-                // setInterval(() => {
-                //     const mySvg = _IFP.mySvg;
-                //     if (mySvg.querySelector('.active')) {
-                //         const location = tour[mySvg.querySelector('.active').id];
-                //         const currentYaw = panorama.getYaw();
-                //         const initYaw = location.yaw;
-                //         const newRotation = location.rotation - (initYaw - currentYaw);
-                //         const newTransform = `${getCurrentTranslate()} rotate(${newRotation})`;
-                //         mySvg.querySelector('#POV').setAttribute('transform', newTransform);
-                //     }
-                // }, 300);
+                setInterval(() => {
+                    const mySvg = _IFP.mySvg;
+                    if (mySvg.querySelector('.active')) {
+                        const location = tour[mySvg.querySelector('.active').id];
+                        const currentYaw = panorama.getYaw();
+                        const initYaw = location.yaw;
+                        const newRotation = location.rotation - (initYaw - currentYaw);
+                        const newTransform = `${getCurrentTranslate()} rotate(${newRotation})`;
+                        mySvg.querySelector('#POV').setAttribute('transform', newTransform);
+                    }
+                }, 300);
 
                 const createTriangle = function () {
                     let polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
@@ -136,44 +121,41 @@ const renderFloorPlan = function(dom, config){
                     return polygon;
                 };
 
-                // document.getElementById('floorplan').addEventListener('load', () => {
-                //     let mySvg;
-                //     _IFP.mySvg = mySvg = document.getElementById('floorplan').contentDocument;
-                //     svgPanZoom(mySvg.querySelector('svg'),{
-                //         zoomEnabled: true,
-                //         fit: 1,
-                //         center: 1
-                //     })
-                //     // debugger
-                //     // mySvg.querySelector('#Plano').appendChild(createTriangle());
-                //     mySvg.querySelector("svg > g").appendChild(createTriangle());
+                document.getElementById('floorplan').addEventListener('load', () => {
+                    let mySvg;
+                    _IFP.mySvg = mySvg = document.getElementById('floorplan').contentDocument;
+                    svgPanZoom(mySvg.querySelector('svg'),{
+                        zoomEnabled: true,
+                        fit: 1,
+                        center: 1
+                    })
+                    // mySvg.querySelector('#Plano').appendChild(createTriangle());
+                    mySvg.querySelector("svg > g").appendChild(createTriangle());
 
-                //     Object.keys(tour).forEach((elem, i) => {
-                //         const el = mySvg.getElementById(elem);
-                //         if (!el) {
-                //             console.error(`There is no location at the SVG with id: #${elem.locationID}`);
-                //             console.error(elem)
-                //             return false;
-                //         }
-                //         el.addEventListener('mouseover', evt => {
-                //             if (!evt.target.classList.contains('active')) {
-                //                 const activeEl = mySvg.querySelector('circle.active');
-                //                 if (activeEl) {
-                //                     mySvg.querySelector('circle.active').classList.remove('active');
-                //                 }
-                //                 panorama.loadScene(evt.target.id);
-                //             }
-                //         });
-                //         el.addEventListener('mouseenter', evt => {
-                //             el.classList.add('active');
-                //         });
-                //     });
+                    Object.keys(tour).forEach((elem, i) => {
+                        const el = mySvg.getElementById(elem);
+                        if (!el) {
+                            console.error(`There is no location at the SVG with id: #${elem.locationID}`);
+                            console.error(elem)
+                            return false;
+                        }
+                        el.addEventListener('mouseover', evt => {
+                            if (!evt.target.classList.contains('active')) {
+                                const activeEl = mySvg.querySelector('circle.active');
+                                if (activeEl) {
+                                    mySvg.querySelector('circle.active').classList.remove('active');
+                                }
+                                panorama.loadScene(evt.target.id);
+                            }
+                        });
+                        el.addEventListener('mouseenter', evt => {
+                            el.classList.add('active');
+                        });
+                    });
 
-                // });
+                });
             })
         }
-
-        // const data = await Promise.all([promise1, promise2])
 
 
 
