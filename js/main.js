@@ -3,94 +3,8 @@
 const initialLocation = 'corridor-1';
 let mySvg;
 
-const tour = {
-    'corridor-1': {
-        panorama: 'panoramas/corridor-1.jpg',
-        yaw: 114,
-        rotation: 52,
-        "hotSpots": [
-            {
-                "pitch": 0,
-                "yaw": 114.67,
-                "type": "scene",
-                "text": "Pasillo 2",
-                "sceneId": "corridor-2",
-                "cssClass": "pulsating-circle",
-            }
-        ]
-    },
-    'corridor-2': {
-        panorama: 'panoramas/corridor-2.jpg',
-        yaw: 20.28,
-        rotation: -25,
-        "hotSpots": [
-            {
-                "pitch": 0,
-                "yaw": -75,
-                "type": "scene",
-                "text": "Pasillo 1",
-                "sceneId": "corridor-1",
-                "cssClass": "pulsating-circle",
-            },
-            {
-                "pitch": 0,
-                "yaw": -4,
-                "type": "scene",
-                "text": "Salón 1",
-                "sceneId": "living-room-2",
-                "cssClass": "pulsating-circle",
-            },
-            {
-                "pitch": -20,
-                "yaw": 22,
-                "type": "scene",
-                "text": "Pasillo 3",
-                "sceneId": "corridor-3",
-                "cssClass": "pulsating-circle",
-            }
-        ]
-    },
-    'corridor-3': {
-        panorama: 'panoramas/corridor-3.jpg',
-        yaw: -78,
-        rotation: 12,
-    },
-    'living-room-1': {
-        panorama: 'panoramas/living-room-1.jpg',
-        yaw: -10,
-        rotation: 35,
-    },
-    'living-room-2': {
-        panorama: 'panoramas/living-room-2.jpg',
-        yaw: -50,
-        rotation: -155
-    },
-    'first-bathroom-0': {
-        panorama: 'panoramas/first-bathroom-0.jpg',
-        yaw: -157,
-        rotation: 75
-    },
-    'first-bathroom-1': {
-        panorama: 'panoramas/first-bathroom-1.jpg',
-        yaw: -266,
-        rotation: 122
-    },
-    'kitchen-1': {
-        panorama: 'panoramas/kitchen-1.jpg',
-        yaw: 281,
-        rotation: 32
-    },
-    'kitchen-2': {
-        panorama: 'panoramas/kitchen-2.jpg',
-        yaw: 88,
-        rotation: 55
-    },
-    'kitchen-3': {
-        panorama: 'panoramas/kitchen-3.jpg',
-        yaw: 96,
-        rotation: 58
-    }
-};
+// Init tour on floor 0
+let tour = floor0;
 
 const panorama = pannellum.viewer('panorama', {
     "default": {
@@ -99,7 +13,6 @@ const panorama = pannellum.viewer('panorama', {
     "scenes": tour,
     "autoLoad": true,
     // "hotSpotDebug": true,
-
 });
 
 panorama.on('scenechange', function (extWindow) {
@@ -121,7 +34,7 @@ const getCurrentTranslate = function () {
 
 setInterval(function () {
     if (mySvg.querySelector('.active')) {
-        const location = tour[mySvg.querySelector('.active').id]//locations.find(elem => elem.locationID === mySvg.querySelector('.active').id)
+        const location = tour[mySvg.querySelector('.active').id];
         const currentYaw = panorama.getYaw();
         const initYaw = location.yaw;
         const newRotation = location.rotation - (initYaw - currentYaw);
@@ -153,8 +66,8 @@ document.getElementById('floorplan').addEventListener('load', () => {
     Object.keys(tour).forEach((elem, i) => {
         const el = mySvg.getElementById(elem);
         if (!el) {
-            console.error(`There is no location at the SVG with id: #${elem.locationID}`)
-            return false
+            console.error(`There is no location at the SVG with id: #${elem.locationID}`);
+            return false;
         }
         el.addEventListener('mouseover', evt => {
             if (!evt.target.classList.contains('active')) {
