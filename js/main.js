@@ -143,6 +143,11 @@ const createTriangle = function () {
 document.getElementById('floorplan').addEventListener('load', () => {
 
     mySvg = document.getElementById('floorplan').contentDocument;
+    svgPanZoom(mySvg.querySelector('svg'),{
+        zoomEnabled: true,
+        fit: 1,
+        center: 1
+    })
     mySvg.querySelector('#Plano').appendChild(createTriangle());
 
     Object.keys(tour).forEach((elem, i) => {
@@ -173,3 +178,5 @@ document.getElementById('floorplan').addEventListener('load', () => {
     }, 300);
 
 });
+
+
