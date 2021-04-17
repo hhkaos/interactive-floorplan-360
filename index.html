@@ -21,31 +21,30 @@
           href="css/main.css">
     <script src="js/svg-pan-zoom.min.js"></script>
 
-
 </head>
 
 <body>
 
-    <div class="container">
-        <div class="column black-border">
-            <ol class="floors">
-                <li>-1</li>
-                <li class="active">0</li>
-                <li>1</li>
-            </ol>
+    <div id="app"></div>
 
-            <object data="img/floor-plant-0.svg"
-                    id="floorplan"
-                    type="image/svg+xml"></object>
-
-        </div>
-        <div class="column">
-            <div id="panorama"></div>
-        </div>
-    </div>
-    <script src="js/floorplan_0.js"></script>
     <script src="js/interactive-floorplan-360.js"></script>
-    <script src="js/main.js"></script>
+    <script>
+        renderFloorPlan("#app", {
+            defaultFloor: '0',
+            floorplans: {
+                '0': {
+                    tour: 'js/floorplan_0.js',
+                    floorplan: 'img/floor-plant-0.svg',
+                    initialLocation: 'corridor-1'
+                },
+                '1': {
+                    tour: 'js/floorplan_1.js',
+                    floorplan: "img/floor-plant-1.svg",
+                    initialLocation: 'second-floor-hall-1'
+                }
+            }
+        });
+    </script>
 
 </body>
 
