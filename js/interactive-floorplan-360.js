@@ -2,33 +2,62 @@
 
 window._IFP = window._IFP || {};
 
-const renderApp = function(config){
+const insertElement = (type, url, onload) => {
+    let element;
+    switch(type){
+        case 'script':
+            element = document.createElement('script');
+            element.src = url;
+            break;
+        case 'link':
+            element = document.createElement('link');
+            element.setAttribute("rel", "stylesheet");
+            element.setAttribute("href", url)
+            break;
+    }
+    if(onload){
+        element.onload = onload;
+    }
+    document.getElementsByTagName('head')[0].appendChild(element);
+};
+
+const renderApp = (config) => {
     let floorMenu = '';
     Object.keys(config.floorplans).forEach((elem, i) => {
         if(i===config.defaultFloor){
-            floorMenu += `<li class="active" data-floor="${elem}">${elem}</li>`
+            floorMenu += `<li class="ipf-active" data-floor="${elem}">${elem}</li>`;
         }else{
             floorMenu += `<li data-floor="${elem}">${elem}</li>`
         }
-
     });
 
-    var xmlString = `
-    <div class="container">
-    <div class="column black-border">
-    <ol class="floors">
+    if(typeof(pannellum) === "undefined"){
+        // Inject dependencies
+        insertElement('script', "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js", () => {
+            setTimeout(function(){
+                _IFP.setActiveFloor(config.defaultFloor)
+            }, 300)
+        });
+        insertElement('link', "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css");
+        insertElement('script', "js/svg-pan-zoom.min.js");
+    }
+
+    const xmlString = `
+    <div class="ipf-container">
+    <div class="ipf-column ipf-black-border">
+    <ol class="ipf-floors">
     ${floorMenu}
     </ol>
 
     <object
     data="${config.floorplans[config.defaultFloor].floorplan}"
-    id="floorplan"
+    id="ipf-floorplan"
     type="image/svg+xml"
     ></object>
 
     </div>
-    <div class="column">
-    <div id="panorama"></div>
+    <div class="ipf-column">
+    <div id="ipf-panorama"></div>
     </div>
     </div>
     `;
@@ -37,8 +66,8 @@ const renderApp = function(config){
 };
 
 const setPanorama = (floorPlanId) => {
-    document.querySelector("#panorama").innerHTML = ""
-    _IFP.panorama = pannellum.viewer('panorama', {
+    document.querySelector("#ipf-panorama").innerHTML = ""
+    _IFP.panorama = pannellum.viewer('ipf-panorama', {
         "default": {
             "firstScene": _IFP.config.floorplans[floorPlanId].initialLocation
         },
@@ -49,43 +78,43 @@ const setPanorama = (floorPlanId) => {
 
     _IFP.panorama.on('scenechange', function (extWindow) {
         const mySvg = _IFP.mySvg;
-        if (mySvg.querySelector('.active')) {
-            mySvg.querySelector('.active').classList.remove('active');
-            mySvg.querySelector('#' + extWindow).classList.add('active')
+        if (mySvg.querySelector('.ipf-active')) {
+            mySvg.querySelector('.ipf-active').classList.remove('ipf-active');
+            mySvg.querySelector('#' + extWindow).classList.add('ipf-active')
         }
     });
 };
 
 const setFloorPlan = (floorPlanId) => {
-    document.querySelector('#floorplan').data = _IFP.config.floorplans[floorPlanId].floorplan;
+    document.querySelector('#ipf-floorplan').data = _IFP.config.floorplans[floorPlanId].floorplan;
 };
 
 _IFP.setActiveFloor = (id) => {
     _IFP.activeFloor = id;
-    const activePlan = document.querySelector('.floors .active');
+    const activePlan = document.querySelector('.ipf-floors .ipf-active');
     if(activePlan){
-        document.querySelector('.floors .active').classList.remove('active');
+        document.querySelector('.ipf-floors .ipf-active').classList.remove('ipf-active');
     }
-    document.querySelector(`.floors [data-floor="${id}"]`).classList.add('active');
+    document.querySelector(`.ipf-floors [data-floor="${id}"]`).classList.add('ipf-active');
     setFloorPlan(id);
     setPanorama(id);
 };
 
 _IFP.getActivePlan = () => _IFP.config.floorplans[_IFP.activeFloor];
 
-const getCurrentTranslate = function () {
-    const cx = _IFP.mySvg.querySelector('.active').getAttribute('cx');
-    const cy = _IFP.mySvg.querySelector('.active').getAttribute('cy');
+const getCurrentTranslate = () => {
+    const cx = _IFP.mySvg.querySelector('.ipf-active').getAttribute('cx');
+    const cy = _IFP.mySvg.querySelector('.ipf-active').getAttribute('cy');
     return `translate(${cx} ${cy})`
 };
 
-const getInitialTranslate = function () {
+const getInitialTranslate = () => {
     const cx = _IFP.mySvg.querySelector('#'+_IFP.getActivePlan().initialLocation).getAttribute('cx');
     const cy = _IFP.mySvg.querySelector('#'+_IFP.getActivePlan().initialLocation).getAttribute('cy');
     return `translate(${cx} ${cy})`
 };
 
-const createTriangle = function () {
+const createTriangle = () => {
     let polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
     polygon.id = "POV";
     //https://www.triangle-calculator.com/?what=sss&a=50&b=50&c=50&submit=Solve
@@ -95,12 +124,12 @@ const createTriangle = function () {
     const x = parseFloat(activePoint.getAttribute('cx'))
     const y = parseFloat(activePoint.getAttribute('cy'))
     polygon.setAttribute("points", `0 0 50 0 25 43.301`);
-    polygon.setAttribute("style", "stroke:#660000; fill:#cc3333;");
+    polygon.setAttribute("style", "fill:#2196f3;");
     polygon.setAttribute('transform', getInitialTranslate());
     return polygon;
 };
 
-const renderFloorPlan = function(dom, config){
+const interactiveFloorPlan = (dom, config) => {
     _IFP.config = config;
     const appEl = document.querySelector(dom);
     const promises = Array();
@@ -110,7 +139,7 @@ const renderFloorPlan = function(dom, config){
         */
         appEl.appendChild(renderApp(config).querySelector("body > *"));
 
-        document.querySelectorAll('.floors li').forEach(elem => {
+        document.querySelectorAll('.ipf-floors li').forEach(elem => {
             elem.addEventListener('click', (evt) => {
                 _IFP.setActiveFloor(evt.target.innerText)
             });
@@ -136,12 +165,12 @@ const renderFloorPlan = function(dom, config){
 
                 _IFP.activeFloor = config.defaultFloor
 
-                _IFP.setActiveFloor(config.defaultFloor)
+                // _IFP.setActiveFloor(config.defaultFloor)
 
-                document.getElementById('floorplan').addEventListener('load', () => {
+                document.getElementById('ipf-floorplan').addEventListener('load', () => {
                     let mySvg;
 
-                    _IFP.mySvg = mySvg = document.getElementById('floorplan').contentDocument;
+                    _IFP.mySvg = mySvg = document.getElementById('ipf-floorplan').contentDocument;
                     svgPanZoom(mySvg.querySelector('svg'),{
                         zoomEnabled: true,
                         fit: 1,
@@ -159,25 +188,23 @@ const renderFloorPlan = function(dom, config){
                             console.error(elem)
                             return false;
                         }
-                        el.addEventListener('mouseover', evt => {
-                            if (!evt.target.classList.contains('active')) {
-                                const activeEl = mySvg.querySelector('circle.active');
+                        el.addEventListener('click', evt => {
+                            if (!evt.target.classList.contains('ipf-active')) {
+                                const activeEl = mySvg.querySelector('circle.ipf-active');
                                 if (activeEl) {
-                                    mySvg.querySelector('circle.active').classList.remove('active');
+                                    activeEl.classList.remove('ipf-active');
                                 }
                                 _IFP.panorama.loadScene(evt.target.id);
                             }
-                        });
-                        el.addEventListener('mouseenter', evt => {
-                            el.classList.add('active');
+                            el.classList.add('ipf-active');
                         });
                     });
 
                     setTimeout(function () {
-                        const mouseoverEvent = new Event('mouseover');
+                        const mouseoverEvent = new Event('click');
                         const firstEl = _IFP.mySvg.getElementById(_IFP.getActivePlan().initialLocation);
                         firstEl.dispatchEvent(mouseoverEvent);
-                        firstEl.classList.add('active');
+                        firstEl.classList.add('ipf-active');
                     }, 300);
 
 
@@ -188,8 +215,8 @@ const renderFloorPlan = function(dom, config){
                     _IFP.interval = setInterval(() => {
                         const mySvg = _IFP.mySvg;
 
-                        if (mySvg.querySelector('.active')) {
-                            const location = tour[mySvg.querySelector('.active').id];
+                        if (mySvg.querySelector('.ipf-active')) {
+                            const location = tour[mySvg.querySelector('.ipf-active').id];
                             const currentYaw = _IFP.panorama.getYaw();
                             const initYaw = location.yaw;
                             const newRotation = location.rotation - (initYaw - currentYaw);

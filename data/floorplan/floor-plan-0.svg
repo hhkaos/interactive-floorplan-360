@@ -12,9 +12,10 @@
         cursor: pointer;
     }
 
-    circle.active {
-        fill: red;
+    circle.ipf-active {
+        fill: #2196f3;
     }
+
   </style>
   <g id="Plano">
     <g

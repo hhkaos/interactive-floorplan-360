@@ -9,7 +9,7 @@
 			"type": "scene",
 			"text": "Pasillo 2",
 			"sceneId": "corridor-2",
-			"cssClass": "pulsating-circle"
+			"cssClass": "ipf-pulsating-circle"
 		}]
 	},
 	"corridor-2": {
@@ -22,7 +22,7 @@
 				"type": "scene",
 				"text": "Pasillo 1",
 				"sceneId": "corridor-1",
-				"cssClass": "pulsating-circle"
+				"cssClass": "ipf-pulsating-circle"
 			},
 			{
 				"pitch": 0,
@@ -30,7 +30,7 @@
 				"type": "scene",
 				"text": "Salón 1",
 				"sceneId": "living-room-2",
-				"cssClass": "pulsating-circle"
+				"cssClass": "ipf-pulsating-circle"
 			},
 			{
 				"pitch": -20,
@@ -38,7 +38,7 @@
 				"type": "scene",
 				"text": "Pasillo 3",
 				"sceneId": "corridor-3",
-				"cssClass": "pulsating-circle"
+				"cssClass": "ipf-pulsating-circle"
 			}
 		]
 	},
