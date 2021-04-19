@@ -6,14 +6,14 @@ const insertElement = (type, url, onload) => {
     let element;
     switch(type){
         case 'script':
-        element = document.createElement('script');
-        element.src = url;
-        break;
+            element = document.createElement('script');
+            element.src = url;
+            break;
         case 'link':
-        element = document.createElement('link');
-        element.setAttribute("rel", "stylesheet");
-        element.setAttribute("href", url)
-        break;
+            element = document.createElement('link');
+            element.setAttribute("rel", "stylesheet");
+            element.setAttribute("href", url)
+            break;
     }
     if(onload){
         element.onload = onload;
