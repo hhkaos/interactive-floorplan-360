@@ -34,35 +34,35 @@ const renderApp = (config) => {
     if(typeof(pannellum) === "undefined"){
         // Inject dependencies
         insertElement('script', "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js", () => {
-        setTimeout(() => {
-            _IFP.setActiveFloor(config.defaultFloor)
-        }, 300)
-    });
-    insertElement('link', "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css");
-    insertElement('script', "js/svg-pan-zoom.min.js");
-}
+            setTimeout(() => {
+                _IFP.setActiveFloor(config.defaultFloor)
+            }, 300)
+        });
+        insertElement('link', "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css");
+        insertElement('script', "js/svg-pan-zoom.min.js");
+    }
 
-const xmlString = `
-<div class="ipf-container">
-<div class="ipf-column ipf-black-border">
-<ol class="ipf-floors">
-${floorMenu}
-</ol>
+    const xmlString = `
+        <div class="ipf-container">
+        <div class="ipf-column ipf-black-border">
+        <ol class="ipf-floors">
+        ${floorMenu}
+        </ol>
 
-<object
-data="${config.floorplans[config.defaultFloor].floorplan}"
-id="ipf-floorplan"
-type="image/svg+xml"
-></object>
+        <object
+        data="${config.floorplans[config.defaultFloor].floorplan}"
+        id="ipf-floorplan"
+        type="image/svg+xml"
+        ></object>
 
-</div>
-<div class="ipf-column">
-<div id="ipf-panorama"></div>
-</div>
-</div>
-`;
+        </div>
+        <div class="ipf-column">
+        <div id="ipf-panorama"></div>
+        </div>
+        </div>
+    `;
 
-return new DOMParser().parseFromString(xmlString, "text/html").documentElement;
+    return new DOMParser().parseFromString(xmlString, "text/html").documentElement;
 };
 
 const setPanorama = (floorPlanId) => {
