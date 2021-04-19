@@ -177,11 +177,11 @@ const interactiveFloorPlan = (dom, config) => {
 
 
                 _IFP.mySvg = mySvg = document.getElementById('ipf-floorplan').contentDocument;
-                // svgPanZoom(mySvg.querySelector('svg'),{
-                //     zoomEnabled: true,
-                //     fit: 1,
-                //     center: 1
-                // })
+                svgPanZoom(mySvg.querySelector('svg'),{
+                    zoomEnabled: true,
+                    fit: 1,
+                    center: 1
+                })
 
                 mySvg.querySelector("svg > g").appendChild(createTriangle());
 
