@@ -6,14 +6,14 @@ const insertElement = (type, url, onload) => {
     let element;
     switch(type){
         case 'script':
-            element = document.createElement('script');
-            element.src = url;
-            break;
+        element = document.createElement('script');
+        element.src = url;
+        break;
         case 'link':
-            element = document.createElement('link');
-            element.setAttribute("rel", "stylesheet");
-            element.setAttribute("href", url)
-            break;
+        element = document.createElement('link');
+        element.setAttribute("rel", "stylesheet");
+        element.setAttribute("href", url)
+        break;
     }
     if(onload){
         element.onload = onload;
@@ -34,35 +34,35 @@ const renderApp = (config) => {
     if(typeof(pannellum) === "undefined"){
         // Inject dependencies
         insertElement('script', "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js", () => {
-            setTimeout(function(){
-                _IFP.setActiveFloor(config.defaultFloor)
-            }, 300)
-        });
-        insertElement('link', "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css");
-        insertElement('script', "js/svg-pan-zoom.min.js");
-    }
+        setTimeout(() => {
+            _IFP.setActiveFloor(config.defaultFloor)
+        }, 300)
+    });
+    insertElement('link', "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css");
+    insertElement('script', "js/svg-pan-zoom.min.js");
+}
 
-    const xmlString = `
-    <div class="ipf-container">
-    <div class="ipf-column ipf-black-border">
-    <ol class="ipf-floors">
-    ${floorMenu}
-    </ol>
+const xmlString = `
+<div class="ipf-container">
+<div class="ipf-column ipf-black-border">
+<ol class="ipf-floors">
+${floorMenu}
+</ol>
 
-    <object
-    data="${config.floorplans[config.defaultFloor].floorplan}"
-    id="ipf-floorplan"
-    type="image/svg+xml"
-    ></object>
+<object
+data="${config.floorplans[config.defaultFloor].floorplan}"
+id="ipf-floorplan"
+type="image/svg+xml"
+></object>
 
-    </div>
-    <div class="ipf-column">
-    <div id="ipf-panorama"></div>
-    </div>
-    </div>
-    `;
+</div>
+<div class="ipf-column">
+<div id="ipf-panorama"></div>
+</div>
+</div>
+`;
 
-    return new DOMParser().parseFromString(xmlString, "text/html").documentElement;
+return new DOMParser().parseFromString(xmlString, "text/html").documentElement;
 };
 
 const setPanorama = (floorPlanId) => {
@@ -76,7 +76,7 @@ const setPanorama = (floorPlanId) => {
         // "hotSpotDebug": true,
     });
 
-    _IFP.panorama.on('scenechange', function (extWindow) {
+    _IFP.panorama.on('scenechange', (extWindow) => {
         const mySvg = _IFP.mySvg;
         if (mySvg.querySelector('.ipf-active')) {
             mySvg.querySelector('.ipf-active').classList.remove('ipf-active');
@@ -129,13 +129,23 @@ const createTriangle = () => {
     return polygon;
 };
 
+const createCircle = (x,y,r) => {
+    let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+
+    circle.setAttribute("cx", x);
+    circle.setAttribute("cy", y);
+    circle.setAttribute("r", r);
+    circle.setAttribute("style", "fill:#C4C4C4;");
+    return circle;
+};
+
 const interactiveFloorPlan = (dom, config) => {
     _IFP.config = config;
     const appEl = document.querySelector(dom);
-    const promises = Array();
+    const promises = [];
     if(appEl.innerHTML.trim() === ""){
         /*
-            IF EMPTY -> FILL DOM
+        IF EMPTY -> FILL DOM
         */
         appEl.appendChild(renderApp(config).querySelector("body > *"));
 
@@ -145,91 +155,101 @@ const interactiveFloorPlan = (dom, config) => {
             });
         })
 
+        // Generate array of fetch promises for each floor plan tour and wait for it
         Object.keys(config.floorplans).forEach((elem, i) => {
-            promises.push(
-                function(){
-                    return fetch(config.floorplans[elem].tour)
-                    .then(response => response.json()
-                    )
-                });
+            promises.push(() => fetch(config.floorplans[elem].tour).then(response => response.json()));
+        });
+
+        const promisesWorking = promises.map(fn => fn());
+
+        Promise.all(promisesWorking)
+        .then(response =>{
+
+            response.forEach((elem, i) => {
+                config.floorplans[i].tourContent = elem
             });
 
-            const promisesWorking = promises.map(fn => fn());
+            _IFP.activeFloor = config.defaultFloor
 
-            Promise.all(promisesWorking)
-            .then(response =>{
-
-                response.forEach(function(elem, i){
-                    config.floorplans[i].tourContent = elem
-                });
-
-                _IFP.activeFloor = config.defaultFloor
-
-                // _IFP.setActiveFloor(config.defaultFloor)
-
-                document.getElementById('ipf-floorplan').addEventListener('load', () => {
-                    let mySvg;
-
-                    _IFP.mySvg = mySvg = document.getElementById('ipf-floorplan').contentDocument;
-                    svgPanZoom(mySvg.querySelector('svg'),{
-                        zoomEnabled: true,
-                        fit: 1,
-                        center: 1
-                    })
-
-                    mySvg.querySelector("svg > g").appendChild(createTriangle());
-
-                    const tour = _IFP.getActivePlan().tourContent;
-
-                    Object.keys(tour).forEach((elem, i) => {
-                        const el = mySvg.getElementById(elem);
-                        if (!el) {
-                            console.error(`There is no location at the SVG with id: #${elem.locationID}`);
-                            console.error(elem)
-                            return false;
-                        }
-                        el.addEventListener('click', evt => {
-                            if (!evt.target.classList.contains('ipf-active')) {
-                                const activeEl = mySvg.querySelector('circle.ipf-active');
-                                if (activeEl) {
-                                    activeEl.classList.remove('ipf-active');
-                                }
-                                _IFP.panorama.loadScene(evt.target.id);
-                            }
-                            el.classList.add('ipf-active');
-                        });
-                    });
-
-                    setTimeout(function () {
-                        const mouseoverEvent = new Event('click');
-                        const firstEl = _IFP.mySvg.getElementById(_IFP.getActivePlan().initialLocation);
-                        firstEl.dispatchEvent(mouseoverEvent);
-                        firstEl.classList.add('ipf-active');
-                    }, 300);
+            document.getElementById('ipf-floorplan').addEventListener('load', () => {
+                let mySvg;
 
 
-                    if(_IFP.interval){
-                        clearInterval(_IFP.interval);
+
+                _IFP.mySvg = mySvg = document.getElementById('ipf-floorplan').contentDocument;
+                // svgPanZoom(mySvg.querySelector('svg'),{
+                //     zoomEnabled: true,
+                //     fit: 1,
+                //     center: 1
+                // })
+
+                mySvg.querySelector("svg > g").appendChild(createTriangle());
+
+                mySvg.addEventListener('click', evt => {
+                    // let dim = evt.target.getBoundingClientRect();
+                    // let x = evt.clientX - dim.left;
+                    // let y = evt.clientY - dim.top;
+                    let x = evt.clientX
+                    let y = evt.clientY
+
+                    // mySvg.querySelector("svg > g").appendChild(createCircle(x,y,12))
+                    // debugger
+                })
+
+                // ipf-floorplan
+                // el.addEventListener('click', evt => {
+
+                const tour = _IFP.getActivePlan().tourContent;
+
+                Object.keys(tour).forEach((elem, i) => {
+                    const el = mySvg.getElementById(elem);
+                    if (!el) {
+                        console.error(`There is no location at the SVG with id: #${elem.locationID}`);
+                        console.error(elem)
+                        return false;
                     }
-
-                    _IFP.interval = setInterval(() => {
-                        const mySvg = _IFP.mySvg;
-
-                        if (mySvg.querySelector('.ipf-active')) {
-                            const location = tour[mySvg.querySelector('.ipf-active').id];
-                            const currentYaw = _IFP.panorama.getYaw();
-                            const initYaw = location.yaw;
-                            const newRotation = location.rotation - (initYaw - currentYaw);
-                            const newTransform = `${getCurrentTranslate()} rotate(${newRotation})`;
-                            mySvg.querySelector('#POV').setAttribute('transform', newTransform);
+                    el.addEventListener('click', evt => {
+                        if (!evt.target.classList.contains('ipf-active')) {
+                            const activeEl = mySvg.querySelector('circle.ipf-active');
+                            if (activeEl) {
+                                activeEl.classList.remove('ipf-active');
+                            }
+                            _IFP.panorama.loadScene(evt.target.id);
                         }
-                    }, 300);
-
+                        el.classList.add('ipf-active');
+                    });
                 });
-            })
-        }
 
-    };
+                setTimeout(() => {
+                    const mouseoverEvent = new Event('click');
+                    const firstEl = _IFP.mySvg.getElementById(_IFP.getActivePlan().initialLocation);
+                    firstEl.dispatchEvent(mouseoverEvent);
+                    firstEl.classList.add('ipf-active');
+                }, 300);
+
+
+                if(_IFP.interval){
+                    clearInterval(_IFP.interval);
+                }
+
+                _IFP.interval = setInterval(() => {
+                    const mySvg = _IFP.mySvg;
+
+                    if (mySvg.querySelector('.ipf-active')) {
+                        const location = tour[mySvg.querySelector('.ipf-active').id];
+                        const currentYaw = _IFP.panorama.getYaw();
+                        const initYaw = location.yaw;
+                        const newRotation = location.rotation - (initYaw - currentYaw);
+                        const newTransform = `${getCurrentTranslate()} rotate(${newRotation})`;
+                        mySvg.querySelector('#POV').setAttribute('transform', newTransform);
+                    }
+                }, 300);
+
+            });
+        })
+    }
+
+};
 
 
 
