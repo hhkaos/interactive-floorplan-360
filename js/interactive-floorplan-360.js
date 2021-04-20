@@ -73,7 +73,7 @@ const setPanorama = (floorPlanId) => {
         },
         "scenes": _IFP.config.floorplans[floorPlanId].tourContent,
         "autoLoad": true,
-        // "hotSpotDebug": true,
+        "hotSpotDebug": _IFP.builder,
     });
 
     _IFP.panorama.on('scenechange', (extWindow) => {
@@ -83,6 +83,8 @@ const setPanorama = (floorPlanId) => {
             mySvg.querySelector('#' + extWindow).classList.add('ipf-active')
         }
     });
+
+    _IFP.ready = _IFP.mySvg? true: false;
 };
 
 const setFloorPlan = (floorPlanId) => {
@@ -102,10 +104,27 @@ _IFP.setActiveFloor = (id) => {
 
 _IFP.getActivePlan = () => _IFP.config.floorplans[_IFP.activeFloor];
 
+_IFP.getActiveScene = () => {
+    let activeScene = null;
+    if(_IFP.mySvg.querySelector('.ipf-active')){
+        const sceneId = _IFP.mySvg.querySelector('.ipf-active').id;
+        activeScene = _IFP.getActivePlan().tourContent[sceneId]
+    }
+
+    return activeScene;
+}
+
 const getCurrentTranslate = () => {
-    const cx = _IFP.mySvg.querySelector('.ipf-active').getAttribute('cx');
-    const cy = _IFP.mySvg.querySelector('.ipf-active').getAttribute('cy');
-    return `translate(${cx} ${cy})`
+    let translate = '';
+    if(_IFP.ready){
+        const activeEl = _IFP.mySvg.querySelector('.ipf-active');
+        const cx = activeEl? activeEl.getAttribute('cx'): 0;
+        const cy = activeEl? activeEl.getAttribute('cy'): 0;
+        translate = `translate(${cx} ${cy})`;
+
+    }
+    return translate;
+
 };
 
 const getInitialTranslate = () => {
@@ -155,16 +174,15 @@ const interactiveFloorPlan = (dom, config) => {
             });
         })
 
-        // Generate array of fetch promises for each floor plan tour and wait for it
+        // Generate array of fetch promises (one for each floor plan tour)
+        // to wait for them afterwards
         Object.keys(config.floorplans).forEach((elem, i) => {
             promises.push(() => fetch(config.floorplans[elem].tour).then(response => response.json()));
         });
 
         const promisesWorking = promises.map(fn => fn());
 
-        Promise.all(promisesWorking)
-        .then(response =>{
-
+        Promise.all(promisesWorking).then(response =>{
             response.forEach((elem, i) => {
                 config.floorplans[i].tourContent = elem
             });
@@ -174,7 +192,7 @@ const interactiveFloorPlan = (dom, config) => {
             document.getElementById('ipf-floorplan').addEventListener('load', () => {
                 let mySvg;
 
-
+                _IFP.ready = _IFP.panorama? true: false;
 
                 _IFP.mySvg = mySvg = document.getElementById('ipf-floorplan').contentDocument;
                 svgPanZoom(mySvg.querySelector('svg'),{
@@ -225,7 +243,7 @@ const interactiveFloorPlan = (dom, config) => {
                     const firstEl = _IFP.mySvg.getElementById(_IFP.getActivePlan().initialLocation);
                     firstEl.dispatchEvent(mouseoverEvent);
                     firstEl.classList.add('ipf-active');
-                }, 300);
+                }, 600);
 
 
                 if(_IFP.interval){
@@ -235,13 +253,16 @@ const interactiveFloorPlan = (dom, config) => {
                 _IFP.interval = setInterval(() => {
                     const mySvg = _IFP.mySvg;
 
-                    if (mySvg.querySelector('.ipf-active')) {
+                    if (mySvg.querySelector('.ipf-active') && !_IFP.builder) {
                         const location = tour[mySvg.querySelector('.ipf-active').id];
                         const currentYaw = _IFP.panorama.getYaw();
                         const initYaw = location.yaw;
                         const newRotation = location.rotation - (initYaw - currentYaw);
                         const newTransform = `${getCurrentTranslate()} rotate(${newRotation})`;
                         mySvg.querySelector('#POV').setAttribute('transform', newTransform);
+
+
+
                     }
                 }, 300);
 
@@ -250,6 +271,3 @@ const interactiveFloorPlan = (dom, config) => {
     }
 
 };
-
-
-
