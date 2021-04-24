@@ -23,13 +23,14 @@ const insertElement = (type, url, onload) => {
 
 const renderApp = (config) => {
     let floorMenu = '';
-    Object.keys(config.floorplans).forEach((elem, i) => {
-        if(i===config.defaultFloor){
+
+    config.floorplansorder.forEach(elem => {
+        if(elem === config.defaultFloor){
             floorMenu += `<li class="ipf-active" data-floor="${elem}">${elem}</li>`;
         }else{
             floorMenu += `<li data-floor="${elem}">${elem}</li>`
         }
-    });
+    })
 
     if(typeof(pannellum) === "undefined"){
         // Inject dependencies
@@ -176,7 +177,7 @@ const interactiveFloorPlan = (dom, config) => {
 
         // Generate array of fetch promises (one for each floor plan tour)
         // to wait for them afterwards
-        Object.keys(config.floorplans).forEach((elem, i) => {
+        config.floorplansorder.forEach((elem, i) => {
             promises.push(() => fetch(config.floorplans[elem].tour).then(response => response.json()));
         });
 
@@ -184,7 +185,8 @@ const interactiveFloorPlan = (dom, config) => {
 
         Promise.all(promisesWorking).then(response =>{
             response.forEach((elem, i) => {
-                config.floorplans[i].tourContent = elem
+                const floorPlanID = config.floorplansorder[i];
+                config.floorplans[floorPlanID].tourContent = elem
             });
 
             _IFP.activeFloor = config.defaultFloor
@@ -223,7 +225,7 @@ const interactiveFloorPlan = (dom, config) => {
                     const el = mySvg.getElementById(elem);
                     if (!el) {
                         console.error(`There is no location at the SVG with id: #${elem.locationID}`);
-                        console.error(elem)
+                        console.log(elem)
                         return false;
                     }
                     el.addEventListener('click', evt => {

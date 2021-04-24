@@ -13,29 +13,15 @@
           href="css/interactive-floorplan-360.css">
 
     <style>
-        header {
-            background-color: #069;
-            text-align: center;
-        }
-
-        header img {
-            height: 51px
-        }
-
         #app {
             width: 100%;
-            max-width: 1290px;
-            margin: 4rem auto;
-            height: 75vh;
+            height: 100vh;
             position: relative;
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <img src="http://habitastate.com/files/habitastate/logo/logo_invertido.png?v=637542895063414270">
-    </header>
     <div id="app"></div>
 
     <script src="js/interactive-floorplan-360.js"></script>
@@ -43,6 +29,11 @@
         interactiveFloorPlan("#app", {
             defaultFloor: '0',
             floorplans: {
+                '-1': {
+                    tour: 'data/tour/tour-floor-plan-garage.json',
+                    floorplan: 'data/floorplan/floor-plan-garage.svg',
+                    initialLocation: 'basement-0'
+                },
                 '0': {
                     tour: 'data/tour/tour-floor-plan-0.json',
                     floorplan: 'data/floorplan/floor-plan-0.svg',
@@ -53,7 +44,8 @@
                     floorplan: "data/floorplan/floor-plan-1.svg",
                     initialLocation: 'second-floor-hall-1'
                 }
-            }
+            },
+            floorplansorder: ['-1', '0', '1']
         });
     </script>
 

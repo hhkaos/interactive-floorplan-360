@@ -11,48 +11,37 @@
 
     <link rel="stylesheet"
           href="css/interactive-floorplan-360.css">
-    <link rel="stylesheet"
-          href="css/tour-builder.css">
+
     <style>
-        #app,
-        .form {
-            width: 100%;
-            max-width: 1290px;
-            margin: 0 auto 1rem;
+        header {
+            background-color: #069;
+            text-align: center;
+        }
+
+        header img {
+            height: 51px
         }
 
         #app {
-            height: 50vh;
+            width: 100%;
+            max-width: 1290px;
+            margin: 4rem auto;
+            height: 75vh;
             position: relative;
         }
     </style>
 </head>
 
 <body>
+    <header>
+        <img src="http://habitastate.com/files/habitastate/logo/logo_invertido.png?v=637542895063414270">
+    </header>
     <div id="app"></div>
-    <div class="form">
-
-        <div class="slidecontainer">
-            <label>POV Angle:</label>
-            <input type="range"
-                   min="1"
-                   max="360"
-                   value="0"
-                   class="slider"
-                   id="myRange">
-            <p>Values:</p>
-            <pre class="values">
-
-            </pre>
-        </div>
-    </div>
-
 
     <script src="js/interactive-floorplan-360.js"></script>
-    <script src="js/tour-builder.js"></script>
     <script>
         interactiveFloorPlan("#app", {
-            defaultFloor: '0',
+            defaultFloor: '-1',
             floorplans: {
                 '-1': {
                     tour: 'data/tour/tour-floor-plan-garage.json',

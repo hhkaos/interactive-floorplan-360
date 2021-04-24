@@ -6,6 +6,7 @@ setInterval(() => {
 
         const yaw = parseInt(_IFP.panorama.getYaw());
         const pitch = parseInt(_IFP.panorama.getPitch());
+        const hfov = parseInt(_IFP.panorama.getHfov());
         let rotation = document.getElementById('myRange').value;
 
         // rotation += parseFloat(_IFP.mySvg.getElementById('POV').getAttribute('transform').match(/.*rotate\((.*)\)/i)[1])
@@ -19,6 +20,9 @@ setInterval(() => {
         updatedScene.yaw = yaw
         updatedScene.pitch = pitch
         updatedScene.rotation = rotation
+        updatedScene.hfov = hfov
+
+
         const str = JSON.stringify(updatedScene, null, 2)
         document.querySelector('.values').innerHTML = str;
     }
