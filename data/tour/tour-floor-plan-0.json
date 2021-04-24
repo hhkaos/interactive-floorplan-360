@@ -3,6 +3,7 @@
 		"panorama": "data/panoramas/corridor-1.jpg",
 		"yaw": 114,
 		"rotation": 60,
+        "hfov": 120,
 		"hotSpots": [{
 			"pitch": 0,
 			"yaw": 114.67,
@@ -16,6 +17,7 @@
 		"panorama": "data/panoramas/corridor-2.jpg",
 		"yaw": 20.28,
 		"rotation": -25,
+        "hfov": 120,
 		"hotSpots": [{
 				"pitch": 0,
 				"yaw": -75,
@@ -46,6 +48,7 @@
 		"panorama": "data/panoramas/corridor-3.jpg",
 		"yaw": -78,
 		"rotation": 12,
+        "hfov": 120,
         "hotSpots": [{
             "pitch": -2,
             "yaw": -95,
@@ -83,6 +86,7 @@
 		"panorama": "data/panoramas/living-room-1.jpg",
 		"yaw": -10,
 		"rotation": 35,
+        "hfov": 120,
         "hotSpots": [{
             "pitch": -3,
             "yaw": -25,
@@ -103,6 +107,7 @@
 		"panorama": "data/panoramas/living-room-2.jpg",
 		"yaw": -50,
 		"rotation": -155,
+        "hfov": 120,
         "hotSpots": [{
             "pitch": -2,
             "yaw": -41,
@@ -123,6 +128,7 @@
 		"panorama": "data/panoramas/first-bathroom-0.jpg",
 		"yaw": -157,
 		"rotation": 75,
+        "hfov": 120,
         "hotSpots": [{
             "pitch": -25,
             "yaw": 101,
@@ -149,82 +155,96 @@
 	"first-bathroom-1": {
 		"panorama": "data/panoramas/first-bathroom-1.jpg",
 		"yaw": -266,
-		"rotation": 122
+		"rotation": 122,
+        "hfov": 120
 	},
 	"kitchen-1": {
 		"panorama": "data/panoramas/kitchen-1.jpg",
 		"yaw": 281,
-		"rotation": 32
+		"rotation": 32,
+        "hfov": 120
 	},
 	"kitchen-2": {
 		"panorama": "data/panoramas/kitchen-2.jpg",
 		"yaw": 88,
-		"rotation": 55
+		"rotation": 55,
+        "hfov": 120
 	},
 	"kitchen-3": {
 		"panorama": "data/panoramas/kitchen-3.jpg",
 		"yaw": 96,
 		"rotation": 58,
-        "pitch": -13
+        "pitch": -13,
+        "hfov": 120
 	},
     "second-living-room-1": {
 		"panorama": "data/panoramas/second-living-room-1.jpg",
 		"yaw": 112,
 		"rotation": 247,
-        "pitch": -12
+        "pitch": -12,
+        "hfov": 120
 	},
     "second-living-room-2": {
 		"panorama": "data/panoramas/second-living-room-2.jpg",
 		"yaw": -86,
 		"rotation": 77,
-        "pitch": -14
+        "pitch": -14,
+        "hfov": 120
 	},
     "washing-machine": {
 		"panorama": "data/panoramas/washing-machine.jpg",
 		"yaw": -14,
 		"rotation": 52,
-        "pitch": -19
+        "pitch": -19,
+        "hfov": 120
 	},
     "party-room-1": {
 		"panorama": "data/panoramas/party-room-1.jpg",
 		"yaw": 59,
-		"rotation": 1,
-        "pitch": -12
+		"rotation": 331,
+        "pitch": -12,
+        "hfov": 120
 	},
     "party-room-2": {
 		"panorama": "data/panoramas/party-room-2.jpg",
 		"yaw": -51,
 		"rotation": 240,
-        "pitch": -17
+        "pitch": -17,
+        "hfov": 120
 	},
     "party-room-3": {
 		"panorama": "data/panoramas/party-room-3.jpg",
 		"yaw": 83,
 		"rotation": 240,
-        "pitch": -10
+        "pitch": -10,
+        "hfov": 120
 	},
     "party-room-4": {
 		"panorama": "data/panoramas/party-room-4.jpg",
 		"yaw": -69,
 		"rotation": 154,
-        "pitch": -13
+        "pitch": -13,
+        "hfov": 120
 	},
      "terrace-0": {
 		"panorama": "data/panoramas/terrace-0.jpg",
 		"yaw": 56,
 		"rotation": 58,
-        "pitch": -16
+        "pitch": -16,
+        "hfov": 120
 	},
     "terrace-1": {
 		"panorama": "data/panoramas/terrace-1.jpg",
 		"yaw": -40,
 		"rotation": 58,
-        "pitch": -15
+        "pitch": -15,
+        "hfov": 120
 	},
     "terrace-2": {
 		"panorama": "data/panoramas/terrace-2.jpg",
 		"yaw": 1,
 		"rotation": 152,
-        "pitch": -9
+        "pitch": -9,
+        "hfov": 120
 	}
 }

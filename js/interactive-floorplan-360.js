@@ -144,7 +144,11 @@ const createTriangle = () => {
     // const x = parseFloat(activePoint.getAttribute('cx'))
     // const y = parseFloat(activePoint.getAttribute('cy'))
     polygon.setAttribute("points", `0 0 50 0 25 43.301`);
-    polygon.setAttribute("style", "fill:#2196f300;");
+    if(_IFP.builder){
+        polygon.setAttribute("style", "fill:#2196f3;");
+    }else{
+        polygon.setAttribute("style", "fill:#2196f300;");
+    }
     polygon.setAttribute('transform', getInitialTranslate());
     return polygon;
 };
@@ -279,9 +283,6 @@ const interactiveFloorPlan = (dom, config) => {
                         const pov = mySvg.querySelector('#POV')
                         pov.setAttribute('transform', newTransform);
                         pov.setAttribute("style", "fill:#2196f3;");
-
-
-
                     }
                 }, 300);
 
