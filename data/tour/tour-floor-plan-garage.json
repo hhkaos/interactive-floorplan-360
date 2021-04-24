@@ -1,0 +1,59 @@
+{
+    "basement-0": {
+        "panorama": "data/panoramas/basement-0.jpg",
+        "yaw": -82,
+        "rotation": 87,
+        "pitch": -15,
+        "hfov": 120
+    },
+    "basement-1": {
+        "panorama": "data/panoramas/basement-1.jpg",
+        "yaw": 104,
+        "rotation": 251,
+        "pitch": -17,
+        "hfov": 120
+    },
+    "basement-2": {
+        "panorama": "data/panoramas/basement-2.jpg",
+        "yaw": 97,
+        "rotation": 176,
+        "pitch": -14,
+        "hfov": 120
+    },
+    "basement-3": {
+        "panorama": "data/panoramas/basement-3.jpg",
+        "yaw": -149,
+        "rotation": 328,
+        "pitch": -11,
+        "hfov": 120
+    },
+    "basement-4": {
+        "panorama": "data/panoramas/basement-4.jpg",
+        "yaw": -27,
+        "rotation": 96,
+        "pitch": -10,
+        "hfov": 120
+    },
+    "basement-5": {
+        "panorama": "data/panoramas/basement-5.jpg",
+        "yaw": -174,
+        "rotation": 22,
+        "pitch": -7,
+        "hfov": 120
+    },
+    "basement-6": {
+        "panorama": "data/panoramas/basement-6.jpg",
+        "yaw": -80,
+        "rotation": 61,
+        "pitch": -2,
+        "hfov": 120
+    },
+    "basement-7": {
+        "panorama": "data/panoramas/basement-7.jpg",
+        "yaw": 67,
+        "rotation": 154,
+        "pitch": -4,
+        "hfov": 120
+    }
+
+}

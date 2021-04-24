@@ -1,7 +1,101 @@
 {
     "second-floor-hall-1": {
         "panorama": "data/panoramas/second-floor-hall-1.jpg",
-        "yaw": -78,
-        "rotation": 12
+        "yaw": -28,
+        "rotation": 164,
+        "pitch": -5,
+        "hfov": 120
+
+    },
+    "second-floor-hall-3": {
+        "panorama": "data/panoramas/second-floor-hall-3.jpg",
+        "yaw": 152,
+        "rotation": 343,
+        "pitch": -4,
+        "hfov": 120
+    },
+    "stairs-1": {
+        "panorama": "data/panoramas/stairs-1.jpg",
+        "yaw": -18,
+        "rotation": 150,
+        "pitch": -6,
+        "hfov": 120
+    },
+    "main-bedroom-1": {
+        "panorama": "data/panoramas/main-bedroom-1.jpg",
+        "yaw": -31,
+        "rotation": 75,
+        "pitch": -18,
+        "hfov": 120
+    },
+    "main-bedroom-2": {
+        "panorama": "data/panoramas/main-bedroom-2.jpg",
+        "yaw": 7,
+        "rotation": 152,
+        "pitch": -15,
+        "hfov": 120
+    },
+    "main-bedroom-3": {
+        "panorama": "data/panoramas/main-bedroom-3.jpg",
+        "yaw": 73,
+        "rotation": 329,
+        "pitch": -16,
+        "hfov": 120
+    },
+    "main-bedroom-4": {
+        "panorama": "data/panoramas/main-bedroom-4.jpg",
+        "yaw": 139,
+        "rotation": 12,
+        "pitch": -20,
+        "hfov": 120
+    },
+    "bathroom-1": {
+        "panorama": "data/panoramas/bathroom-1.jpg",
+        "yaw": 6,
+        "rotation": 151,
+        "pitch": -18,
+        "hfov": 120
+    },
+    "bathroom-2": {
+        "panorama": "data/panoramas/bathroom-2.jpg",
+        "yaw": 11,
+        "rotation": 339,
+        "pitch": -14,
+        "hfov": 120
+    },
+    "bathroom-3": {
+        "panorama": "data/panoramas/bathroom-3.jpg",
+        "yaw": 66,
+        "rotation": 83,
+        "pitch": -18,
+        "hfov": 120
+    },
+    "second-bedroom-1": {
+        "panorama": "data/panoramas/second-bedroom-1.jpg",
+        "yaw": -66,
+        "rotation": 287,
+        "pitch": -14,
+        "hfov": 120
+    },
+    "second-bedroom-2": {
+        "panorama": "data/panoramas/second-bedroom-2.jpg",
+        "yaw": -75,
+        "rotation": 151,
+        "pitch": -18,
+        "hfov": 120
+    },
+    "third-bedroom-1": {
+        "panorama": "data/panoramas/third-bedroom-1.jpg",
+        "yaw": -27,
+        "rotation": 290,
+        "pitch": -22,
+        "hfov": 120
+    },
+    "third-bedroom-2": {
+        "panorama": "data/panoramas/third-bedroom-2.jpg",
+        "yaw": 120,
+        "rotation": 205,
+        "pitch": -10,
+        "hfov": 120
     }
 }
