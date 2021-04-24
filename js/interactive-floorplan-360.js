@@ -140,14 +140,28 @@ const createTriangle = () => {
     //https://www.triangle-calculator.com/?what=sss&a=50&b=50&c=50&submit=Solve
     // Triangle vertex coordinates: [0; 0] [50; 0] [25; 43.301]
     _IFP.mySvg.querySelector('#'+_IFP.getActivePlan().initialLocation)
-    const activePoint = _IFP.mySvg.querySelector('#'+_IFP.getActivePlan().initialLocation)
-    const x = parseFloat(activePoint.getAttribute('cx'))
-    const y = parseFloat(activePoint.getAttribute('cy'))
+    // const activePoint = _IFP.mySvg.querySelector('#'+_IFP.getActivePlan().initialLocation)
+    // const x = parseFloat(activePoint.getAttribute('cx'))
+    // const y = parseFloat(activePoint.getAttribute('cy'))
     polygon.setAttribute("points", `0 0 50 0 25 43.301`);
-    polygon.setAttribute("style", "fill:#2196f3;");
+    polygon.setAttribute("style", "fill:#2196f300;");
     polygon.setAttribute('transform', getInitialTranslate());
     return polygon;
 };
+
+const createSVGStyles = () => {
+    let style = document.createElement('style');
+    style.innerHTML = `
+        circle:hover {
+            cursor: pointer;
+        }
+
+        circle.ipf-active {
+            fill: #2196f3;
+        }
+    `;
+    return style;
+}
 
 const createCircle = (x,y,r) => {
     let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -204,6 +218,7 @@ const interactiveFloorPlan = (dom, config) => {
                 })
 
                 mySvg.querySelector("svg > g").appendChild(createTriangle());
+                mySvg.querySelector("svg").appendChild(createSVGStyles())
 
                 mySvg.addEventListener('click', evt => {
                     // let dim = evt.target.getBoundingClientRect();
@@ -261,7 +276,9 @@ const interactiveFloorPlan = (dom, config) => {
                         const initYaw = location.yaw;
                         const newRotation = location.rotation - (initYaw - currentYaw);
                         const newTransform = `${getCurrentTranslate()} rotate(${newRotation})`;
-                        mySvg.querySelector('#POV').setAttribute('transform', newTransform);
+                        const pov = mySvg.querySelector('#POV')
+                        pov.setAttribute('transform', newTransform);
+                        pov.setAttribute("style", "fill:#2196f3;");
 
 
 
@@ -273,3 +290,9 @@ const interactiveFloorPlan = (dom, config) => {
     }
 
 };
+
+document.addEventListener("keydown", e => {
+    if (e.keyCode == 82 && e.code === "KeyR"){
+        _IFP.panorama.startAutoRotate(8);
+    }
+});
